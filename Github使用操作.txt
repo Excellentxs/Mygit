@@ -1,0 +1,14 @@
+现在远端github上创建一个仓库
+
+复制目录的url：git clone url
+
+进入仓库：cd 仓库名
+
+查看仓库的状态：git status
+
+将文件存入缓存区：git add .    （.的意思是将文件夹全部内容添加到git）
+将文件存入缓存区：git add 文件名字
+
+将文件提交：git commit -m 描述
+
+将文件推入远程仓库：git push 
