@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<button id="btn">发送get请求</button>
+<button id="btn1">发送post请求</button>
+<body>
+
+</body>
+<script>
+    function myAjax() {
+       function parseJson(obj) {
+           let arr = [];
+           // 要把字符串转换下面这种格式
+           //obj = {
+           //   name:yaoming,
+           //   sex:manren,
+           //   stature:216
+           // }
+           // name=yaoming&sex=nanren&stature=216
+           for(let key in obj){
+               arr.push(`${key}=${obj[key]}`);
+               // console.log(arr);
+           }
+           //join()通过指定的分隔符进行分隔
+           return arr.join("&")
+       }
+       return{
+           get(url){
+               return new Promise((resolve,reject)=>{
+                   let xhr = null;
+                   if (window.XMLHttpRequest){
+                       xhr = new XMLHttpRequest()
+                   } else {
+                       xhr = new ActiveXObject("Microsoft XMLHTTP");
+                   }
+                   xhr.open("GET",url);
+                   xhr.onreadystatechange = function(){
+                       if (xhr.readyState==4&&xhr.status==200){
+                           resolve(JSON.parse(xhr.response));
+                       }
+                       else if(xhr.readyState==4&&xhr.status>400){
+                           resolve(xhr.status);
+                       }
+                   };
+                   xhr.send();
+               });
+           },
+           post(url,data={}){
+               // post传输的时候需要加上数据
+               // data = data||{};
+               return new Promise((resolve,reject)=>{
+                   let xhr = null;
+                   if (window.XMLHttpRequest){
+                       xhr = new XMLHttpRequest()
+                   } else {
+                       xhr = new ActiveXObject("Microsoft XMLHTTP");
+                   }
+                   xhr.open("POST",url);
+                   xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+                   xhr.onreadystatechange = function(){
+                       if (xhr.readyState==4&&xhr.status==200){
+                           resolve(JSON.parse(xhr.response));
+                       }
+                       else if(xhr.readyState==4&&xhr.status>400){
+                           resolve(xhr.status);
+                       }
+                   };
+                   // name=yaoming&sex=nanren&stature=216
+                   // send内必须放入查询字符串
+                   xhr.send(parseJson(data));
+               });
+           }
+       }
+    }
+</script>
+<script>
+    var btn = document.getElementById("btn");
+    var sendPost = document.getElementById("btn1");
+
+    btn.onclick = function () {
+        myAjax().get("/something?sex=nanren&name=yaoming&stature=216").then(res=>{
+            console.log(res);
+        });
+    };
+    sendPost.onclick = function () {
+        myAjax().post("/getPost",{
+            name:"薛之谦",
+            sex:"boy",
+            age:30
+        }).then(res=>{
+            console.log(res);
+        })
+    }
+</script>
+</html>

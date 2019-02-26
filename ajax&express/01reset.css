@@ -1,0 +1,23 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+li{
+    list-style: none;
+}
+
+body{
+    font-family: "PingFangSC-Regular","Microsoft YaHei",Helvetica;
+    background: #f5f7f9;
+    line-height: 1.5;
+}
+/*去除下划线*/
+a{
+    text-decoration: none;
+    color: #b4b4b4;
+}
+/*设定图片大小*/
+img {
+    display: block;
+    width: 100%;
+}

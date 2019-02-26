@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./01reset.css">
+    <style>
+        .container{
+            padding: 10px 14px;
+        }
+        .container h1 {
+            font-size: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+</div>
+</body>
+<script>
+    // 拿去地址中的数据
+    // localtion记录地址,
+     let container = document.querySelector(".container")
+    var search = location.search;
+    // console.log(search);
+    search = search.substring(1);
+    // parseQuery用于解析url查询参数
+    let id = parseQuery(search).id;
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET",`http://didi.yaojunrong.com/api/article/get?id=${id}`,true);
+    xhr.onreadystatechange = function () {
+        //事件处理函数
+        if (xhr.readyState ==4&&xhr.status==200){
+            //console.log(xhr.response);
+            let res = JSON.parse(xhr.response);
+            console.log(res);
+            let item = res.data[0];
+            let date = new Date(item.createtime*1000);
+            let year = date.getFullYear();
+            let month = date.getMonth()+1;
+            let day = date.getDate();
+            let formaTime = `${year}-${month}-${day}`;
+            let template = `
+            <h1>${item.title}</h1>
+            <div class="desc">
+                <span class="desc-item time">${formaTime}</span>
+                <span class="desc-item time">10:21</span>
+                <span class="desc-item author">${item.author}</span>
+            </div>
+            <div class="content">
+                ${item.content}
+            </div>
+            `;
+            container.innerHTML = template;
+        }
+    };
+    xhr.send();
+    // 取?id=18&author=yaoming&sex=nan。？查询字符串
+    // let str = "?id=18&author=yaoming&sex=nan";
+    // str = str.substring(1);
+    // console.log(str);
+    function parseQuery(str) {
+        let obj = {};
+        let arr = str.split("&");
+        console.log(arr);
+        arr.forEach(item=>{
+            let innerArr = item.split("=");
+            obj[innerArr[0]] = innerArr[1];
+        });
+        return obj;//完成转换
+    }
+    console.log(parseQuery(search));
+</script>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <button id="btn">发送post请求</button>
+</body>
+<script>
+    // 能力检测试兼容
+
+    var btn = document.getElementById("btn");
+    // let xhr = new XMLHttpRequest();
+    // console.log("12345789");
+    // let xhr = new ActiveXObject("Microsoft.XMLHTTP");//IE6
+    // xhr.open("GET","/get");
+    // xhr.onreadystatechange = function () {
+    //     if (xhr.readyState==4&&xhr.status==200){
+    //         console.log(xhr.response);
+    //     }
+    // };
+    // xhr.send();
+
+    function ajax(opt) {//option
+        //赋默认值
+        opt.type = opt.type || "GET";//用户数据查询方式
+        opt.async = opt.async || true;//判断同步异步
+        var xhr = null;
+        if (window.XMLHttpRequest){
+            xhr = new XMLHttpRequest();
+        } else{ //ie6
+            xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xhr.open(opt.type,opt.url,opt.async);
+        if (xhr.type=="POST"){
+            xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        }
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState==4 && xhr.status==200){
+                // console.log(xhr);
+                opt.success(JSON.parse(xhr.response));
+            }
+        };
+        xhr.send();
+    }
+
+    ajax({
+        url:"https://m.yaojunrong.com/book",
+        success(res) {
+            console.log(res)
+        }
+    });
+
+    btn.onclick = function () {
+        ajax({
+            url: "/post",
+            type:"POST",
+            success(res){
+                console.log(res);
+            }
+        })
+    }
+</script>
+</html>

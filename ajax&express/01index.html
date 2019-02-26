@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="01index.css">
+    <link rel="stylesheet" href="01reset.css">
+</head>
+<body>
+<ul class="list">
+
+</ul>
+<!--enctype编码格式 application/x-www-form-urlencoded是发送表单时候用的-->
+<!--multipart/form-data 是发送文件时候使用的-->
+<!--<form action="" method="post" enctype=""></form>-->
+</body>
+
+<script>
+    var ul = document.querySelector(".list");//querySelector兼容iE的时候需要改
+    // var path = "http://didi.yaojunrong.com/api/article/get";
+    var path = 'http://didi.yaojunrong.com/api/article/get';
+    var xhr = new XMLHttpRequest();//创造一个ajax构造器获取数据
+    //open(请求方式,请求的地址,是同步还是异步默认为true)
+    xhr.open("GET",path,true);//设定请求的地址
+    // xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");//设定请求头
+    xhr.onreadystatechange = function(){//监听
+    //readyState表示本地的状态，其共有四种状态，当为4的时候表示ajax对象已经发送数据了
+    //status http状态码
+        if(xhr.readyState == 4 && xhr.status == 200){
+            let res = JSON.parse(xhr.response);
+            console.log(res);
+            let str = "";
+            res.data.forEach(item =>{
+                let date = new Date(item.createtime*1000);//时间戳以毫秒为单位
+                let year = date.getFullYear();
+                let month = date.getMonth()+1;
+                let day = date.getDate();
+                let formatTime = `${year}-${month}-${day}`
+                // 部署在服务器可以加/，/表示绝对路径
+                // <a href="/02details.html?id=${item.id}">
+                    let template = `
+            <li class="item">
+                <a href="02details.html?id=${item.id}">
+                     <h2>${item.title}</h2>
+                     <div>
+                        <span class="author">${item.author}</span>
+                        <span calss="time">${formatTime}</span>
+                    </div>
+                </a>
+            </li>`;
+                str += template;
+            });
+            console.log(str);
+            ul.innerHTML = str;//把数据放入页面中
+        }
+    };
+    xhr.send();//发送请求
+
+</script>
+</html>

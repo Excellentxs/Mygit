@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script src="./07axios.js"></script>
+<script>
+    // axios默认异步写法，没有同步
+    let path = "https://m.yaojunrong.com/book";
+    // axios.get(path).then(res =>{
+    //     console.log(res);
+    // });
+    
+    function myAjax() {
+        return {
+            get(url) {
+                //因为axios中有点then方法，则联想到Promise
+                return new Promise(((resolve, reject) =>{
+                    let xhr = null;
+                    //兼容 ajax对象
+                    if (window.XMLHttpRequest){
+                        xhr = new XMLHttpRequest();
+                    }else {
+                        xhr = new ActiveXObject("Microsoft.XMLHTTP")
+                    }
+                    xhr.open("GET",url);
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState==4&&xhr.status==200)   {
+                            let data = JSON.parse(xhr.response);
+                            resolve(data);
+                        }
+                        // 错误处理
+                        else if (xhr.readyState==4&&xhr.status>200) {
+                            resolve(xhr.status);
+                        }
+                    };
+                    xhr.send();
+                }));
+            }
+        }
+    }
+    myAjax().get(path).then(res=>{
+        console.log(res);
+    });
+</script>
+</html>
