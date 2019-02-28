@@ -1,0 +1,139 @@
+﻿mysql:
+查看数据库：show databases;
+查看表格：show tables;
+查询表格的信息：SELECT * from 表格名;
+表格某属性的信息：SELECT 属性名 from 表格名;
+
+
+MongoDB:数据库+集合+文档(每条数据)
+MongoDB是对象的结构：数据库+多个对象+对象
+输入mongo：可启动服务 查看MongoDB 数据库实验指导
+查看有哪些数据库：show dbs;    //db表示database  s表示复数
+切换到那个数据库或者新建一个数据库：use dbname;(数据库的名字)
+db.title.insert(db:数据库  title:集合名  insert命令:创建一个title的集合)
+eg：
+	db.title.insert({name:"钢铁是怎样练成的",author:"奥斯特洛夫斯基"});
+	db.title.insert({name:"朝花夕拾",author:"鲁迅"});
+删除数据库：db.dropDatabase（）;
+
+集合：
+创建集合：db.createCollection(name);
+查看集合：show collections 或者 show tables;
+删除集合：db.集合名.drop();
+
+
+查找条件的书写方式：({键名:键值},{键名:键值},...);
+文档：CURD(increase update read delete)
+查询集合中的文档：db.集合名.find();
+//id:0表示隐藏id返还键名和键值  id:1表示显示id并且只返还文档id
+查询文档的某个键名：db.集合名.find({键名:"键值"},{_id:0}); 
+删除某条文档：db.集合名.remove({键名:键值});//remove()括号中放查找条件
+删除所有文档：db.集合名.remove({});
+更新某条文档：db.集合名.update({被替换的键名:被替换的键值},{替换的键名:替换的键值});
+但更新某条文档是覆盖型更新，可能会多或者少文档；
+
+
+MongoDB的添加：db.集合名.insert({键名:键值,键名:键值,键名:键值,...});
+(1)简单查询：
+	db.集合名.find({条件},{返回的键});find({},{_id:0}):表示返回的结果中所有文档滤掉这个键
+(2)比较查询：
+	db.集合名.find({键名:{条件}}); // 键值要加双引号
+	$lt  <  less than 			    小于
+	$lte <= less  than and equal    小于等于
+	$gt  >  greater than            大于     eg:db.user.find({age:{$gt:"28"}})
+	$gte >= greater than and equal  大于等于
+	$ne  != not equal               不等于
+(3)逻辑查询：
+	or and not in   +数组[]
+	db.集合名.find({$and:[{age:{$gt:"28",$lt:"58"}},{sex:"man"}]})
+	db.集合名.find({$or:[{age:"18"},{age:"28"}]})
+	db.集合名.find({age:{$in:["28","58"]}})
+	$or和$in的区别：$or后面+对象 属性名可变。  $in提前指定了属性名
+	db.集合名.find({age:{$not:{$gt:"18",$lt:"38"}}})    $not提前指定了属性名
+(4)数组查询：
+	$all(既...又...)   eg：db.集合名.find({键名:{$all:["键值"，”键值“，...]}})
+	$size(选取几种) eg：db.集合名.find({键名:{$size:2}})
+	$slice(截取几个位置) eg：db.集合名.find({"键名":"键值"},{键名:{$slice:2}})
+	key.index  eg：db.集合名.find({"键名.index":"键值"}) 查询第二种水果为orange的水果店 
+(5)内嵌文档查询：
+	db.集合名.find({“外部键名.内部键名”：”键值“,“外部键名.内部键名”：”键值“,...});
+	db.people.find({"name.first":"michael","name.last":"jordan"})
+(6)null查询：
+	$exists:true 判断键名是否存在  $in:判断键值是否存在 
+	db.集合名.find({键名:($exists:true,$in:[键值])});
+	db.userl.find({tel:{$exists:true,$in:[null]}},{_id:0}))
+(7)限定查询结果：
+	db.集合名.find().limit();
+	db.user.find().limit(2);  //表示取出前两个数据
+	db.集合名.find.skip();
+	db.user.find().skip(2);   //表示跳过前两个取后面的数据
+	//表示跳过前3个取两个数据而且limit和skip没有先后顺序
+	db.user.find().limit(2).skip(3);  
+	//sort起到排序的功能，sort后面可以加多个对象，但是sort只执行第一个对象要求排列的规则 
+	//或者可以说只把第一个对象作为参考值(第一个优先级高)
+	db.user.find().sort({_id:1},{age:-1});
+	//降序排列   id有4位时间戳构成的，有时间顺序  （{_id:1}）则表示升序排列
+	db.user.find().sort({_id:-1});
+
+
+更新
+updata 格式：db.集合名.update(参数1，参数2，参数3，参数4);
+参数1:更新条件，同查询条件
+参数2:具体更新有内容
+参数3:是一个布尔值，表示如果不存在update的文档，是否插入这个文档，默认是false，不插入
+参数4:是更新查询所有的文档，true表示更新所有的，false表示只更新第一条记录，默认是false
+更新修改器
+	$inc  increment 增加 更新文档中的一部分
+	db.集合名.update({键名:键值},{$inc:{键名:增加量}})  //两个键名是同一个键名
+	eg：db.user.update({age:18},{$inc:{age:1}})
+	
+	$set  set 是集合，设置
+	db.集合名.update({键名:键值},{$set:{要改变的键名:要改变的键值}})
+	eg：db.user.update({name:"aa"},{$set:{sex:"man"}})
+	
+	$unset  删除
+	db.集合名.update({键值:键名},{$unset:{要删除的键名:index}})
+	eg：db.user.update({name:"aa"},{$unset:{love:1}})
+	
+	$push  向数组中增加一个元素
+	db.集合名.update({键名:键值},{$push:{要增加元素的键名:元素}})
+	eg：db.user.update({name:"aa"},{$set:{friends:["小明","小红","小刚"]}})//创建一个属性
+	   db.user.update({name:"aa"},{$push:{friends:"小丽"}})  //增加一个元素
+	
+	$push $each 向数组中添加多个元素
+	db.集合名.update({键名:键值},{$push:{要增加元素的键名:{$each:[元素,元素,...]}}})
+	eg：db.user.update({name:"aa"},{$push:{friends:{$each:["李华","赵刚","李云龙"]}}})
+	
+	$pop  删除数组最后一个或第一个， -1从前面删除，1从后面删除
+	db.集合名.update({键值:键名},{$pop:{键名:1}})
+	eg：db.user.update({name:"aa"},{$pop:{friends:1}})
+	
+	$pull  从数组中删除指定的一个
+	db.集合名.update({键名:键值},{$pull:{要删除元素的键名:要删除的元素}})
+	eg：db.user.update({name:"aa"},{$pull:{friends:"赵刚"}})
+	
+	$pullAll  从数组中删除多个
+	db.集合名.update({键名:键值},{$pullAll:{要删除元素的键名:要删除的元素,要删除的元素,...}})
+	eg：db.user.update({name:"aa"},{$pullAll:{friends:["李华","小刚"]}})
+	
+	$addToSet  向数组中添加一个内容  不会添加重复的元素
+	db.集合名.update({键名:键值},{$addToSet:{要增加元素的键名:元素}})
+	eg：db.user.update({name:"aa"},{$addToSet:{friends:"小美"}})
+
+Save:
+	db.集合名.save()  相当于update语句中参数3为true,参数4为false
+
+	
+Mongoose
+	骨架声明统一的数据结构
+	骨架生成模型Model，模型会有数据库上所有的API，可以进行增删改查，其作用在集合上
+	文档也有增删改查
+	
+
+
+
+
+
+
+
+
