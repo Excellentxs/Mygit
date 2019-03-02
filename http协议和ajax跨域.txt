@@ -1,0 +1,129 @@
+Http协议：
+Timing：请求时间，资源从服务器到你浏览器上所需要的时间
+Cookies：储存在用户本地终端上的数据
+Response：服务器给的响应
+Preview：预览使用
+Headers：请求头，调试请求用的
+响应头：Connection:keep-alive
+一个域名支持四个连接
+网络优化:减少http请求数
+减少Http请求数：1、精灵图  2、iconfon  3、http2(但必须是https)  http是明文传输的
+http请求的是资源，资源由URL(统一资源定位符)决定的，资源又分静态资源和动态资源
+静态资源：服务器上自动存在的
+动态资源：服务器上没有的，通过一定计算，变化的资源
+CURL查看HTTP Header响应头信息：curl -l http://localhost:端口
+CURL是一个利用URL语法在命令行下工作的文件传输工具
+Request line：响应行  http版本，请求方式 状态码
+Content-Type:浏览器怎么解析数据。
+Content-Length:用于描述HTTP消息实体的传输长度
+请求头：Request Header
+响应头：Response Header
+Set-Cookie请求:浏览器带本地的Cookie上服务器，服务器的响应可以设置Cookie
+响应的主题内容是body  响应头+响应体
+
+常用状态码：
+200 OK：请求已正常处理。
+302 Found：临时性重定向。
+400 Bad Request：服务器端无法理解客户端发送的请求
+401 Unauthorized：未健全，发送的请求需要有通过某些协议的验证
+403 Forbidden：不允许访问那个资源。
+404 Not Found：服务器上没有请求的资源、路径错误等。
+500 Internal Server Error：
+貌似内部资源出故障了。该状态码表明服务器端在执行请求时发生了错误。也有可能是web应用存在bug或某些临时故障。
+
+Cookie和Session
+Cookie：浏览器用来存储东西的一块地方
+session：会话控制，实际上是服务器在自己的内存区域开辟了一块空间，用来记录用户佛如登录状态的。
+
+Webstorm-fdf88486=5128c2a2-9595-40e2-8479-63845dd6294f
+
+跨域：跨域是因为浏览器的同源政策引起的
+Access 权限，获取
+错误：Access to XMLHttpRequest at 'http://localhost:3000/getJson' from origin 'http://localhost:3002' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+意思是不允许跨域
+
+jsonp跨域原理：
+jsonp创建script标签请求数据，跨过ajax请求。script标签没有跨域的概念
+在server2中创建回调函数、script和jsonp的地址，并且jsonp的地址中末尾(?callback=)的回调函数名与创建的回调函数名相同，同时在server1的服务器中创建的端口名与回调函数的名一致。
+
+Cors跨域原理：
+简单请求：1、浏览器直接发出cors请求，发送cors中会自动带上一个请求头Origin：客户端域名
+		  2、服务器根据请求返还内容
+		  3、浏览器对返回的请求头进行分析
+Access-Control-Allow-Origin 响应头
+非简单请求：
+	axios默认为json。
+	第一步：
+	先发出一个options的请求。该请求会带上一些头信息
+	Origin： 客户端域名
+	Access-Control-Request-Headers: content-type (发自定义的请求头要在type后明确指出) (表明客户端发送的请求头数据)
+	Access-Control-Request-Method: POST       （表明客户端发送的请求类型）
+	第二步：
+	服务器返回options请求
+	Access-Control-Allow-Origin：允许跨域的域名（可以是指定域名，也可以是全域名“*”）
+	Access-Control-Allow-Headers: “与客户端对应”
+	Access-Control-Allow-Method： 与客户端的对应或者大于客户端
+	第三步：
+	客户端检查options请求的响应头。如果
+	Access-Control-Allow-Origin：允许跨域的域名
+	Access-Control-Allow-Headers: “与客户端对应”
+	Access-Control-Allow-Method： 与客户端的对应或者大于客户端
+	如果对应上了。那么，浏览器正式发起一个请求。
+	第四步：
+	服务器对请求做出回应。同时，带上之前发送的响应头。完成跨域过程。
+解决session丢失方案：
+	1在响应头里边，指定唯一的允许跨域的域名。
+	2服务端在响应头里边。指定Access-Control-Allow-Credentials：true
+	3客户端的ajax对象，必须指定withCredentials: true；
+		
+	引入中间件cors去解决跨域问题，但对于非简单请求需要在app.js中设置条件，代码如下：
+	app.use(cors({
+	  origin:"http://localhost:3002",//必须指定域名否则将会导致session丢失
+	  credentials:true
+	}));
+	在客户端不设置withCredentials将没有cookie值，意味着session会丢失
+
+代理跨域：服务器的ajax对象是没有跨域概念的，可以直接拿到数据
+	拿不到数据，server1不给予支持，我们让server2给予支持，这就是代理跨域
+	原理：在服务器上先请求到别的域名数据，然后返回。前端请求同域下的接口。
+	换句话说就是服务器代为转发了一次数据(跨域的概念只存在于浏览器端)
+	
+	运用中间件http-proxy-middleware，代码如下：
+	app.use("/server1",httpproxy({ 			//先前的路径/server1作为区分
+	  target:"http://localhost:3000", 		//代理server1的路径
+	  changeOrigin:true,					//是否允许跨域
+	  pathRewrite:{     					//去掉代理请求时多加的路径，如：server1
+		"/server1":""   					//重写前缀
+	  }
+	}));
+	但与要用一个api将其隔开，
+	要不将会把server2服务器上所有的请求全部转换到server1上
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

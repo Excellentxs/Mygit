@@ -1,0 +1,16 @@
+
+1、创建express文件：express -e hello
+
+2、进入创建的hello文件： cd hello
+
+3、node_modules 是先要npm install
+
+4、运行文件：npm run start
+
+5、文件构造：1.bin中放的是运行文件
+			 2.public静态资源
+			 3.routes路由
+			 4.views放的是模板引擎文件
+			 5.app.js是配置文件说明
+			 
+6、执行是先在views中创建模板引擎，public中创建个CSS文件，再在routes中的index中输入相应的js代码。
