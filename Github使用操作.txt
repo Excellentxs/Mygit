@@ -1,14 +1,113 @@
-现在远端github上创建一个仓库
+操作的流程：
+	现在远端github上创建一个仓库
 
-复制目录的url：git clone url
+	复制目录的url：git clone url
 
-进入仓库：cd 仓库名
+	进入仓库：cd 仓库名
 
-查看仓库的状态：git status
+	查看仓库的状态：git status
 
-将文件存入缓存区：git add .    （.的意思是将文件夹全部内容添加到git）
-将文件存入缓存区：git add 文件名字
+	将文件存入缓存区：git add .    （.的意思是将文件夹全部内容添加到git）
+	将文件存入缓存区：git add 文件名字
 
-将文件提交：git commit -m 描述
+	将文件提交：git commit -m 描述
 
-将文件推入远程仓库：git push 
+	将文件推入远程仓库：git push 
+
+git的一些方法：<name>表示远程库的名字
+
+	git init 初始化一个空的仓库
+
+	git status 查看状态
+	  查看状态出现的一些错误如下：
+		nothing to commit  没有任何修改
+		nothing added to commit but untracked files present有文件被修改但没有添加到暂存区
+		No commits yet Changes to be committed  没有提交到版本仓库区
+		nothing to commit, working tree clean  没有区提交得事情，工作区是干净的
+		On branch master Changes not staged for commit: 在主分支上有些改变没有被提交
+		 "git add <file>..." to update what will be committed  保存到暂存区
+		 "git checkout -- <file>..." to discard changes in working directory 在工作区丢弃改变
+
+	git add 文件名或者"."("."表示上传文件内所有的内容) 
+	git add <file> 1、表示添加文件到暂存区 2、给暂存区文件添加追踪
+
+	git config --global user.email "你自己的邮箱"
+	git config --global user.name "你自己的账号名"
+
+	git commit -m "注释"  提交到版本仓库区
+
+	git log 记载你所有的版本记录同时生成一个commit的id（如：作者，修改时间）
+	HEAD -> master   表示当前硬盘在哪个位置
+
+	git reset --hard commit的id   恢复到你commit的id对应的文件
+
+	git reset HEAR <file> 将文件从暂存区移除
+
+	git remote add <name> 仓库地址  添加远程库
+
+	git push <name> master 推送到远程库的一个分支
+	
+	git pull 拉取远程的库的最新更新
+	
+	git push -u <name> master   -u 则是推送的同时，将该远程仓库设置为默认远程库
+	
+	回滚操作是必须你的操作添加到暂存区之后才可以回滚
+	git checkout -- demo.txt
+	git checkout -- <file> 将操作回滚（工作区的修改放弃）
+	
+	touch .gitignore是创建一个声明一个git不追踪的文件，这个文件最好在项目新建的时候，就提前写好。
+	
+进行远程库的切换：
+
+	git remote  查看远程库
+
+	git remote add [<options>] <name> <url> 切换远程库的路径
+
+	git push <name> master 把内容推到远程库中 
+	
+	git remote get-url --push --all <name>  查看远程库的名字
+
+	git remote remove <name>  删除远程库
+	
+分支branch：
+
+	创建分支：git branch 分支名字
+
+	分支的切换：git checkout 分支名  
+
+	分支的回退：git checkout -- ./路径
+	查看所有的分支：git branch
+
+	分支合并：git merge 子分支的名字
+
+	删除分支：git branch -d 分支的名字
+
+分支冲突： 运用分支合并，把分支整理在一起，再删除你不要的代码，再进行git上传
+
+本地库和服务器库的冲突(解决push远程库失败的问题)：
+	方法一：先git pull 把服务器上的内容拉下来，再在代码中选择正确的修改，进行提交
+	方法二：git reset --hard origin/master  从服务器上获取内容  origin/master(可改 仓库名/分知名)
+
+强制提交：git push -f  (保证本地库和服务器的库完全一样，你的上一次的版本提交将不存在)
+
+公钥：
+	在用户目录下
+	先输入：ssh-keygen 一直回车
+	再输入：vim~/.ssh/id_rsa.pub  就可以查看公钥了
+
+	
+	
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+

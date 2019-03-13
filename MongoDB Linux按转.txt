@@ -1,0 +1,19 @@
+MongoDBLinux安装
+
+1. Apt-get install mongodb
+
+2. 去/home/data/新建两个文件夹(db和log)
+
+3.写一个配监文件在/usr/ocal/etc/mongo.config代码如下:(粘贴时不要带注释)
+systemLog:
+	destination: file
+	path: /home/data/log/mongo.log //日志文件存储从位置
+	logAppend: true 
+storage:
+	dbPath: /home/data/db //数据库文件存储的位置net:
+	bindlp: 127.0.0.1 // mongodb服务运行的ip
+processManagement:
+	fork: true //是否后台运行
+	
+4启动mongodb
+Mongod --config /usrlocaletc/mongo.config

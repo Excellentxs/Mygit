@@ -24,6 +24,7 @@ Set-Cookie请求:浏览器带本地的Cookie上服务器，服务器的响应可以设置Cookie
 常用状态码：
 200 OK：请求已正常处理。
 302 Found：临时性重定向。
+304 Not Modified：客户端已经执行了请求，但所请求的资源未修改。
 400 Bad Request：服务器端无法理解客户端发送的请求
 401 Unauthorized：未健全，发送的请求需要有通过某些协议的验证
 403 Forbidden：不允许访问那个资源。
